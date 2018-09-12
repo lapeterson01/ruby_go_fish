@@ -1,0 +1,12 @@
+Metrics/MethodLength:
+  Max: 7
+Style/ParallelAssignment:
+  Enabled: false
+Metrics/LineLength:
+  Max: 100
+Metrics/AbcSize:
+  Max: 18
+Lint/HandleExceptions:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
