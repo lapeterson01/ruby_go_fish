@@ -2,20 +2,18 @@ require_relative 'card_deck'
 
 # creates and runs a game of go fish
 class Game
-  attr_reader :deck, :player1, :player2, :turn
+  attr_reader :deck, :players, :turn
 
-  def initialize(deck = CardDeck.new)
+  def initialize(number_of_players, deck = CardDeck.new)
     @deck = deck
-    @players = []
-    @player1 = Player.new
-    @player2 = Player.new
-    @players << @player1 << @player2
-    @turn = @player1
+    @players = {}
+    number_of_players.times { |player_number| @players["player#{player_number + 1}"] = Player.new }
+    @turn = @players['player1']
   end
 
   def start
     @deck.shuffle!
-    @players.each { |player| @players.length < 4 ? deal_cards(7, player) : deal_cards(5, player) }
+    @players.each_value { |player| @players.length < 4 ? deal_cards(7, player) : deal_cards(5, player) }
   end
 
   def play_round(player, rank)
@@ -36,7 +34,7 @@ class Game
       end
     end
     unless get_catch
-      @turn = @turn == @player1 ? @player2 : @player1
+      @turn = @turn == @players['player1'] ? @players['player2'] : @players['player1']
     end
   end
 
