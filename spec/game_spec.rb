@@ -37,7 +37,7 @@ describe Game do
     it 'removes specified card from specified player (if they have the card) and adds it to the player whose turn it is' do
       player1.retrieve_card(card1)
       player2.retrieve_card(card2)
-      game.play_round(player2, 'A')
+      game.play_round('player2', 'A')
       expect(count_hand(player1)).to eq 2
       expect(count_hand(player2)).to eq 0
     end
@@ -46,7 +46,7 @@ describe Game do
       card2 = PlayingCard.new('Q', 'Hearts')
       player1.retrieve_card(card1)
       player2.retrieve_card(card2)
-      game.play_round(player2, 'A')
+      game.play_round('player2', 'A')
       expect(count_hand(player1)).to eq 2
       expect(count_hand(player2)).to eq 1
     end
@@ -54,27 +54,39 @@ describe Game do
     it 'allows the player to get another turn if player gets the card they asked for' do
       player1.retrieve_card(card1)
       player2.retrieve_card(card2)
-      game.play_round(player2, 'A')
+      game.play_round('player2', 'A')
       expect(game.turn).to eq player1
     end
 
-    it 'changes turns to the next player if first player does not get the card they asked for' do
-      game = Game.new(2, CardDeck.new([PlayingCard.new('2', 'Clubs')]))
-      player1, player2 = game.players['player1'], game.players['player2']
-      card2 = PlayingCard.new('Q', 'Hearts')
-      player1.retrieve_card(card1)
-      player2.retrieve_card(card2)
-      game.play_round(player2, 'A')
-      expect(game.turn).to eq player2
+    describe 'changing turns' do
+      let(:game) { Game.new(2, CardDeck.new([PlayingCard.new('2', 'Clubs'), PlayingCard.new('K', 'Diamonds')])) }
+      let(:player1) { game.players['player1'] }
+      let(:player2) { game.players['player2'] }
+      let(:card2) { PlayingCard.new('Q', 'Hearts') }
+
+      before do
+        player1.retrieve_card(card1) && player2.retrieve_card(card2)
+        game.play_round('player2', 'A')
+      end
+
+      it 'changes turns to the next player if first player does not get the card they asked for' do
+        expect(game.turn).to eq player2
+        game.play_round('player1', 'Q')
+        expect(game.turn).to eq player1
+      end
     end
 
     it 'keeps track of player books and sets the book aside when player gets one' do
       card3, card4 = PlayingCard.new('A', 'Diamonds'), PlayingCard.new('A', 'Hearts')
       player1.retrieve_card(card1) && player1.retrieve_card(card2) && player1.retrieve_card(card3)
       player2.retrieve_card(card4)
-      game.play_round(player2, 'A')
+      game.play_round('player2', 'A')
       expect(player1.books).to eq 1
       expect(count_hand(player1)).to eq 0
+    end
+
+    it 'does not allow a player to ask for a card that is not in their hand' do
+      expect(game.play_round('player2', '2')).to eq 'You can only ask for a rank that is in your hand'
     end
   end
 end
