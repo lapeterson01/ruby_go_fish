@@ -1,3 +1,4 @@
+require_relative 'playing_card'
 require 'pry'
 
 # creates a deck of 52 standard playing cards
@@ -17,6 +18,10 @@ class CardDeck
 
   def deal
     @cards.shift
+  end
+
+  def out_of_cards?
+    @cards.empty?
   end
 
   def ==(other)

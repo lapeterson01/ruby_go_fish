@@ -35,4 +35,13 @@ describe CardDeck do
       expect(deck1).to eq deck2
     end
   end
+
+  describe '#out_of_cards?' do
+    it 'returns true if the deck is out of cards and false if it is not' do
+      deck1 = CardDeck.new
+      expect(deck1.out_of_cards?).to eq false
+      deck2 = CardDeck.new([])
+      expect(deck2.out_of_cards?).to eq true
+    end
+  end
 end

@@ -1,9 +1,10 @@
 # creates Go Fish player
 class Player
-  attr_reader :hand
+  attr_reader :hand, :name
   attr_accessor :books
 
-  def initialize
+  def initialize(name)
+    @name = name
     @hand = {}
     @books = 0
   end
@@ -15,5 +16,9 @@ class Player
 
   def give_up_cards(rank)
     @hand.delete(rank)
+  end
+
+  def out_of_cards?
+    @hand.empty?
   end
 end

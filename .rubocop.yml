@@ -3,7 +3,7 @@ Metrics/MethodLength:
 Style/ParallelAssignment:
   Enabled: false
 Metrics/LineLength:
-  Max: 100
+  Enabled: false
 Metrics/AbcSize:
   Max: 18
 Lint/HandleExceptions:
