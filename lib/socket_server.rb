@@ -32,11 +32,7 @@ class SocketServer
   def create_game_if_possible
     return unless @pending_clients.length > 1
 
-    @pending_clients.each do |client|
-      output = client.capture_output
-      client.ready = true if output.include? 'start'
-      return if client.ready == false
-    end
+    @pending_clients.each { |client| return unless check_client_ready_status(client) }
 
     game = Game.new(@pending_clients.length)
     # change this when you have internet again
@@ -57,6 +53,12 @@ class SocketServer
   def handle_accept_clients_messages(client)
     return client.puts('Waiting for more players') if @pending_clients.length < 2
 
-    @pending_clients.each { |client| client.provide_input "#{@pending_clients.length} players have joined.. Type 'start' to begin game or wait for more players" }
+    @pending_clients.each { |each_client| each_client.provide_input "#{@pending_clients.length} players have joined.. Type 'start' to begin game or wait for more players" }
+  end
+
+  def check_client_ready_status(client)
+    output = client.capture_output
+    client.ready = true if output.include? 'start'
+    client.ready == true
   end
 end

@@ -12,7 +12,7 @@ class SocketClient
     @connection.puts(text)
   end
 
-  def capture_output(delay=0.1)
+  def capture_output(delay = 0.1)
     sleep(delay)
     @connection.read_nonblock(1000)
   rescue IO::WaitReadable
