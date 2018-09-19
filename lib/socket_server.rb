@@ -32,6 +32,7 @@ class SocketServer
   def create_game_if_possible
     return unless @pending_clients.length > 1
 
+    # fix?
     @pending_clients.each { |client| return unless check_client_ready_status(client) }
 
     game = Game.new(@pending_clients.length)
@@ -42,6 +43,9 @@ class SocketServer
 
   def run_game(game)
     game_runner = GameRunner.new(game, @games[game])
+    # game.start
+    # game.play_round until game.winner
+    # game.winner
   end
 
   def stop

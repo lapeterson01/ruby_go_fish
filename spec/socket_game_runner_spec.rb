@@ -47,4 +47,38 @@ describe GameRunner do
       expect(count_hand(@player1) && count_hand(@player2)).to eq 7
     end
   end
+
+  describe '#play_round' do
+    it 'takes input from clients in order to play a round' do
+      card1, card2 = PlayingCard.new('A', 'Spades'), PlayingCard.new('A', 'Clubs')
+      @player1.retrieve_card(card1)
+      @player2.retrieve_card(card2)
+      @client1.provide_input('Player 2 for A')
+      @game_runner.play_round
+      expect(@client1.capture_output).to match(/You took A of Clubs from Player 2/)
+      expect(@client2.capture_output).to match(/Player 1 took A of Clubs from you/)
+    end
+
+    it 'returns the appropriate message to each player if the player drew from the deck' do
+      card1, card2 = PlayingCard.new('A', 'Spades'), PlayingCard.new('Q', 'Hearts')
+      @player1.retrieve_card(card1)
+      @player2.retrieve_card(card2)
+      @client1.provide_input('Player 2 for A')
+      @game_runner.play_round
+      expect(@client1.capture_output).to match(/You asked for A and drew/)
+      expect(@client2.capture_output).to match(/Player 1 asked for A and drew/)
+    end
+
+    it 'returns an message when player asks for card not in their hand and lets them go again' do
+      card1, card2 = PlayingCard.new('A', 'Spades'), PlayingCard.new('A', 'Clubs')
+      @player1.retrieve_card(card1)
+      @player2.retrieve_card(card2)
+      @client1.provide_input('Player 2 for K')
+      @game_runner.play_round
+      expect(@client1.capture_output).to match(/You can only ask for a rank that is in your hand/)
+      @client1.provide_input('Player 2 for A')
+      @game_runner.play_round
+      expect(@client1.capture_output).to match(/You took A of Clubs from Player 2/)
+    end
+  end
 end
