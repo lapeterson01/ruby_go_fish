@@ -81,4 +81,18 @@ describe GameRunner do
       expect(@client1.capture_output).to match(/You took A of Clubs from Player 2/)
     end
   end
+
+  describe '#winner' do
+    it 'returns the winner of the round' do
+      card1, card2 = PlayingCard.new('A', 'Spades'), PlayingCard.new('A', 'Clubs')
+      card3, card4 = PlayingCard.new('A', 'Diamonds'), PlayingCard.new('A', 'Hearts')
+      @player1.retrieve_card(card1) && @player1.retrieve_card(card2)
+      @player2.retrieve_card(card3) && @player2.retrieve_card(card4)
+      @client1.provide_input('Player 2 for A')
+      @game_runner.play_round
+      @game_runner.winner
+      expect(@client1.capture_output).to match(/You won!/)
+      expect(@client2.capture_output).to match(/You lost... Winner: Player 1/)
+    end
+  end
 end

@@ -28,6 +28,20 @@ class GameRunner
     @connections.each_pair { |player, connection| handle_final_round_input(player, connection) }
   end
 
+  def winner
+    @connections.each_pair do |player, connection|
+      if @game.winner.class == Array
+        @game.winner.each { |winner| connection.provide_input('You won!') if winner == player }
+      elsif @game.winner == player
+        connection.provide_input('You won!')
+      elsif @game.winner
+        connection.provide_input("You lost... Winner: #{@game.winner.name}")
+      else
+        @game.winner
+      end
+    end
+  end
+
   private
 
   def handle_initial_round_input
@@ -47,7 +61,7 @@ class GameRunner
 
   def handle_take_card_from_player(player, connection)
     if player == @game.turn
-      connection.provide_input(@round_result.sub(@game.turn.name, 'You'))
+      connection.provide_input(@round_result.gsub(@game.turn.name, 'You'))
     elsif player.name == @player_choice
       connection.provide_input(@round_result.sub(player.name, 'you'))
     else

@@ -85,7 +85,7 @@ class Game
   def calculate_winner(player)
     if player.books > @winning_books
       @winner, @winning_books = player, player.books
-    elsif player.books == @winning_books
+    elsif player.books == @winning_books && player.books > 0
       @winner.class == Array ? @winner.push(player) : @winner = [@winner, player]
     end
   end
