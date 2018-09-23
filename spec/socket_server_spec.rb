@@ -35,12 +35,6 @@ describe SocketServer do
     clients.push(@client2)
   end
 
-  def test_create_game_before_clients_ready(server, client)
-    server.create_game_if_possible
-    expect(server.games.length).to eq 0
-    client.provide_input('start')
-  end
-
   let(:server) { SocketServer.new }
   let(:clients) { [] }
 
@@ -68,26 +62,9 @@ describe SocketServer do
       server.create_game_if_possible
       expect(server.games.length).to eq 0
       setup_client2(server, clients)
-      expect(@client1.capture_output && @client2.capture_output).to match(/2 players have joined.. Type 'start' to begin game or wait for more players/)
-      clients.each { |client| client.provide_input('start') }
+      expect(@client1.capture_output && @client2.capture_output).to match(/2 players have joined/)
       server.create_game_if_possible
       expect(server.games.length).to eq 1
-    end
-
-    it 'will only create a game if all clients say they are ready to start' do
-      setup_client2(server, clients)
-      clients.each { |client| test_create_game_before_clients_ready(server, client) }
-      server.create_game_if_possible
-      expect(server.games.length).to eq 1
-    end
-  end
-
-  describe '#run_game' do
-    it 'runs the game from the server' do
-      setup_client2(server, clients)
-      clients.each { |client| client.provide_input('start') }
-      game = server.create_game_if_possible
-      expect(server.run_game(game)).to be_instance_of GameRunner
     end
   end
 end

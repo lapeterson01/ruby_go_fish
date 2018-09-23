@@ -1,4 +1,6 @@
 require 'socket'
+require 'pry'
+require_relative 'game'
 require_relative 'socket_client'
 require_relative 'socket_game_runner'
 
@@ -30,22 +32,21 @@ class SocketServer
   end
 
   def create_game_if_possible
+    @games.each { |game| game.push(@pending_clients) unless game.started }
     return unless @pending_clients.length > 1
 
-    # fix?
-    @pending_clients.each { |client| return unless check_client_ready_status(client) }
-
     game = Game.new(@pending_clients.length)
-    # change this when you have internet again
     @games[game] = @pending_clients.shift(@pending_clients.length)
     game
   end
 
   def run_game(game)
     game_runner = GameRunner.new(game, @games[game])
-    # game.start
-    # game.play_round until game.winner
-    # game.winner
+    game_runner.start
+    Thread.start do
+      game_runner.play_round until game.winner
+      game_runner.winner
+    end
   end
 
   def stop
@@ -57,12 +58,13 @@ class SocketServer
   def handle_accept_clients_messages(client)
     return client.puts('Waiting for more players') if @pending_clients.length < 2
 
-    @pending_clients.each { |each_client| each_client.provide_input "#{@pending_clients.length} players have joined.. Type 'start' to begin game or wait for more players" }
+    @pending_clients.each { |each_client| each_client.provide_input "#{@pending_clients.length} players have joined" }
   end
 
-  def check_client_ready_status(client)
-    output = client.capture_output
-    client.ready = true if output.include? 'start'
-    client.ready == true
+  def check_client_ready_status
+    @pending_clients.each do |client|
+      output = client.capture_output
+      client.ready = true if output.include? 'start'
+    end
   end
 end

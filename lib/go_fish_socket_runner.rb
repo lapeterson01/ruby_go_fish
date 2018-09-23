@@ -1,3 +1,4 @@
+require 'pry'
 require_relative 'socket_server'
 
 server = SocketServer.new

@@ -1,31 +1,35 @@
 require_relative 'card_deck'
 require_relative 'player'
+require 'pry'
 
 # creates and runs a game of go fish
 class Game
-  attr_reader :deck, :players, :turn
+  attr_reader :deck, :players, :turn, :started
 
   def initialize(number_of_players, deck = CardDeck.new)
     @deck = deck
     @players = {}
     number_of_players.times { |player_number| @players["Player #{player_number + 1}"] = Player.new("Player #{player_number + 1}") }
     @turn = @players['Player 1']
+    @started = false
   end
 
   def start
     @deck.shuffle!
     @players.each_value { |player| @players.length < 4 ? deal_cards(7, player) : deal_cards(5, player) }
+    @started = true
   end
 
   def play_round(player_name, rank)
     return 'You can only ask for a rank that is in your hand' unless @turn.hand[rank]
 
-    @books_display = 0
+    return 'You cannot ask yourself for a card' if player_name == @turn.name
+
     player = @players[player_name]
     get_catch = player.hand[rank] ? handle_asked_player_has_card(player, rank) : handle_go_fish(rank)
-    @turn.hand.each_key { |set| handle_player_got_book(set) }
+    handle_player_got_book
     next_player_turn unless get_catch
-    @books_display > 0 ? @string_to_display.concat(".. #{@turn.name} got #{@books_display} #{book_or_books}") : @string_to_display
+    @books_display_number > 0 ? @string_to_display.concat(".. #{@books_display_name} got #{@books_display_number} #{book_or_books}") : @string_to_display
   end
 
   def winner
@@ -57,12 +61,15 @@ class Game
     _get_catch = card.rank == rank
   end
 
-  def handle_player_got_book(set)
-    return unless @turn.hand[set].length == 4
+  def handle_player_got_book
+    @books_display_name, @books_display_number = @turn.name, 0
+    @turn.hand.each_key do |set|
+      next unless @turn.hand[set].length == 4
 
-    @turn.books += 1
-    @turn.give_up_cards(set)
-    @books_display += 1
+      @turn.books += 1
+      @turn.give_up_cards(set)
+      @books_display_number += 1
+    end
   end
 
   def next_player_turn
@@ -98,6 +105,6 @@ class Game
   end
 
   def book_or_books
-    @books_display == 1 ? 'book' : 'books'
+    @books_display_number == 1 ? 'book' : 'books'
   end
 end
