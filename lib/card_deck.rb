@@ -32,26 +32,3 @@ class CardDeck
     equal
   end
 end
-
-def play
-  output = ''
-  output = @socket.gets until output.include? 'start'
-  @socket.puts 'start'
-  next_request = ''
-  until output.include? 'Winner'
-    if output.include? 'hand'
-      RANKS.each do |rank|
-        if output.include? rank
-          next_request = rank
-          break
-        end
-      end
-      @socket.gets
-    elsif output.include? 'Type'
-      @socket.puts "Player 2 for #{next_request}"
-    else
-      @socket.gets
-    end
-  end
-  @socket.gets
-end
