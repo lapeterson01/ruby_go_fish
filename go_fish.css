@@ -1,0 +1,122 @@
+body {
+    background-color: rgb(247, 250, 62);
+}
+
+.container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.home__title {
+    font-size: 70px;
+    margin-top: -75px;
+    margin-bottom: -50px;
+    color: #757AFD;
+    -webkit-text-stroke-color: #4B4EA2;
+    -webkit-text-stroke-width: 1px;
+}
+
+.home__instruction {
+    font-size: 70px;
+    margin-top: -50px;
+    color: #757AFD;
+    -webkit-text-stroke-color: #4B4EA2;
+    -webkit-text-stroke-width: 1px;
+}
+
+.home__name {
+    display: flex;
+    flex-direction: row;
+}
+
+.name__input {
+    height: 60px;
+    width: 500px;
+    border: 1px black solid;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 45px;
+}
+
+.name__button {
+    height: 60px;
+    width: 200px;
+    font-size: 40px;
+    margin-left: 10px;
+    background-color: #757AFD;
+    color: white;
+    border-radius: 20px;
+}
+
+@media (max-width: 400px) {
+    .home__title {
+        font-size: 25px;
+        margin-bottom: 0px;
+    }
+
+    .home__instruction {
+        font-size: 22px;
+        margin-top: 0px;
+    }
+
+    .home__name {
+        flex-direction: column;
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .name__input {
+        height: 30px;
+        width: 150px;
+        font-size: 20px;
+    }
+
+    .name__button {
+        height: 30px;
+        width: 75px;
+        font-size: 15px;
+        margin-left: 0px;
+        margin-top: 10px;
+        padding: 5px;
+        border-radius: 10px;
+    }
+}
+
+@media (min-width: 400px) and (max-width: 600px) {
+    .home__title {
+        font-size: 35px;
+        margin-bottom: 0px;
+        margin-top: -110px;
+    }
+
+    .home__instruction {
+        font-size: 30px;
+        margin-top: 0px;
+    }
+
+    .home__name {
+        flex-direction: column;
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .name__input {
+        height: 40px;
+        width: 200px;
+        font-size: 30px;
+    }
+
+    .name__button {
+        height: 40px;
+        width: 105px;
+        font-size: 20px;
+        margin-left: 0px;
+        margin-top: 10px;
+        padding: 5px;
+        border-radius: 15px;
+    }
+}
