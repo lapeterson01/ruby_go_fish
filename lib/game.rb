@@ -6,12 +6,16 @@ require 'pry'
 class Game
   attr_reader :deck, :players, :turn, :started, :books_display_name, :books_display_number, :string_to_display, :winning_books
 
-  def initialize(number_of_players, deck = CardDeck.new)
+  def initialize(deck = CardDeck.new)
     @deck = deck
     @players = {}
-    number_of_players.times { |player_number| @players["Player #{player_number + 1}"] = Player.new("Player #{player_number + 1}") }
-    @turn = @players['Player 1']
+    # number_of_players.times { |player_number| @players["Player #{player_number + 1}"] = Player.new("Player #{player_number + 1}") }
     @started = false
+  end
+
+  def add_player(player)
+    @players[player.name] = player
+    @turn = player if @players.length == 1
   end
 
   def start

@@ -35,7 +35,8 @@ class SocketServer
     @games.each { |game| game.push(@pending_clients) unless game.started }
     return unless @pending_clients.length > 1
 
-    game = Game.new(@pending_clients.length)
+    game = Game.new
+    @pending_clients.length.times { |player_number| add_players(game, player_number) }
     @games[game] = @pending_clients.shift(@pending_clients.length)
     game
   end
@@ -61,10 +62,8 @@ class SocketServer
     @pending_clients.each { |each_client| each_client.provide_input "#{@pending_clients.length} players have joined" }
   end
 
-  def check_client_ready_status
-    @pending_clients.each do |client|
-      output = client.capture_output
-      client.ready = true if output.include? 'start'
-    end
+  def add_players(game, player_number)
+    player = Player.new("Player #{player_number + 1}")
+    game.add_player(player)
   end
 end

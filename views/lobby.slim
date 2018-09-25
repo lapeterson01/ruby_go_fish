@@ -1,0 +1,16 @@
+div.navbar
+    ul.navbar--list
+        li
+            a.navbar--item href="/" GO FISH!
+
+div.players
+    h2.players__title Players:
+    ul.players__list
+        - game.players.each_value do |player|
+            - if player.name == current_player.name
+                li.players__list--current_player = player.name
+            - else
+                li = player.name
+
+form action="/game" type="get"
+    button.button--game type="submit" Start Game!

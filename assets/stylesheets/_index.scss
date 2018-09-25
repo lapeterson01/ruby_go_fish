@@ -1,30 +1,21 @@
-body {
-    background-color: rgb(247, 250, 62);
-}
-
-.container {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
+// .home {
+//     background
+// }
 
 .home__title {
+    position: absolute;
     font-size: 70px;
-    margin-top: -75px;
-    margin-bottom: -50px;
-    color: #757AFD;
-    -webkit-text-stroke-color: #4B4EA2;
+    top: 20px;
+    color: #47E5BC;
+    -webkit-text-stroke-color: #A5A728;
     -webkit-text-stroke-width: 1px;
 }
 
 .home__instruction {
     font-size: 70px;
     margin-top: -50px;
-    color: #757AFD;
-    -webkit-text-stroke-color: #4B4EA2;
+    color: #CDD042;
+    -webkit-text-stroke-color: #A5A728;
     -webkit-text-stroke-width: 1px;
 }
 
@@ -47,7 +38,7 @@ body {
     width: 200px;
     font-size: 40px;
     margin-left: 10px;
-    background-color: #757AFD;
+    background-color: #CDD042;
     color: white;
     border-radius: 20px;
 }

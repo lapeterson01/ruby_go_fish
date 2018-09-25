@@ -8,11 +8,18 @@ describe Game do
     count
   end
 
-  let(:game) { Game.new(2) }
-  let(:player1) { game.players['Player 1'] }
-  let(:player2) { game.players['Player 2'] }
+  let(:game) { Game.new }
+  # let(:player1) { game.players['Player 1'] }
+  # let(:player2) { game.players['Player 2'] }
+  let(:player1) { Player.new('Player 1') }
+  let(:player2) { Player.new('Player 2') }
   let(:card1) { PlayingCard.new('A', 'Spades') }
   let(:card2) { PlayingCard.new('A', 'Clubs') }
+
+  before do
+    game.add_player(player1)
+    game.add_player(player2)
+  end
 
   describe '#initialize' do
     it 'begins with deck of 52 standard playing cards' do
@@ -59,12 +66,14 @@ describe Game do
     end
 
     describe 'changing turns' do
-      let(:game) { Game.new(2, CardDeck.new([PlayingCard.new('2', 'Clubs'), PlayingCard.new('K', 'Diamonds')])) }
-      let(:player1) { game.players['Player 1'] }
-      let(:player2) { game.players['Player 2'] }
+      let(:game) { Game.new(CardDeck.new([PlayingCard.new('2', 'Clubs'), PlayingCard.new('K', 'Diamonds')])) }
+      let(:player1) { Player.new('Player 1') }
+      let(:player2) { Player.new('Player 2') }
       let(:card2) { PlayingCard.new('Q', 'Hearts') }
 
       before do
+        game.add_player(player1)
+        game.add_player(player2)
         player1.retrieve_card(card1) && player2.retrieve_card(card2)
         game.play_round('Player 2', 'A')
       end
@@ -91,10 +100,15 @@ describe Game do
   end
 
   describe '#winner' do
-    let(:game) { Game.new(2, CardDeck.new([PlayingCard.new('2', 'Clubs'), PlayingCard.new('A', 'Hearts')])) }
-    let(:player1) { game.players['Player 1'] }
-    let(:player2) { game.players['Player 2'] }
+    let(:game) { Game.new(CardDeck.new([PlayingCard.new('2', 'Clubs'), PlayingCard.new('A', 'Hearts')])) }
+    let(:player1) { Player.new('Player 1') }
+    let(:player2) { Player.new('Player 2') }
     let(:card3) { PlayingCard.new('A', 'Diamonds') }
+
+    before do
+      game.add_player(player1)
+      game.add_player(player2)
+    end
 
     it 'assigns a winner when the pool is out of cards' do
       card4 = PlayingCard.new('5', 'Diamonds')

@@ -1,0 +1,49 @@
+html {
+    height: 100%;
+}
+
+body {
+    background: linear-gradient(to top, #8491A3, #89AB94 50%, #eee 75%, #89AB94);
+    height: 100%;
+}
+
+.container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.opponent {
+    margin-top: -80px;
+}
+
+.opponent__card-count {
+    font-size: 35px;
+}
+
+.opponent__name {
+    font-size: 35px;
+}
+
+.opponent__books-count {
+    font-size: 35px;
+}
+
+.table {
+    margin-top: 50px;
+}
+
+.deck {
+    font-size: 40px;
+}
+
+.current-player__name {
+    font-size: 35px;
+}
+
+.current-player__books-count {
+    font-size: 35px;
+}
