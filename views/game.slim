@@ -1,21 +1,20 @@
 div.game
     div.opponent
-        div.opponent__card-count Cards: 7
-        div.opponent__name Steve
-        div.opponent__books-count Books: 2
+        - game.other_players(game.players[current_player.name]).each do |player|
+            div.opponent__card-count Cards: #{player.count_hand}
+            div.opponent__name = player.name
+            div.opponent__books-count Books: #{player.books}
 
     div.table
         div.deck
-            h6 The Deck goes here
+            h6 = game.deck.cards.length
 
     div.current-player__bubble
-        div.current-player__name Logan
-        div.current-player__books-count Books: 7
+        div.current-player__name = current_player.name
+        div.current-player__books-count Books: #{current_player.books}
 
     div.current-player__hand
-        div.current-player__card-count Cards: 8
+        div.current-player__card-count Cards: #{game.players[current_player.name].count_hand}
         ul.hand--card-list
-            li.hand--card-item Your
-            li.hand--card-item Cards
-            li.hand--card-item Go
-            li.hand--card-item Here
+            - game.players[current_player.name].hand.each_pair do |rank, set|
+                li.hand--card-item #{set.length} #{rank}

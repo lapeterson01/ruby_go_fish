@@ -21,4 +21,10 @@ class Player
   def out_of_cards?
     @hand.empty?
   end
+
+  def count_hand
+    count = 0
+    @hand.each_value { |set| count += set.length }
+    count
+  end
 end

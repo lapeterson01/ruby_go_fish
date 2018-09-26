@@ -2,12 +2,6 @@ require 'rspec'
 require_relative '../lib/game'
 
 describe Game do
-  def count_hand(player)
-    count = 0
-    player.hand.each_value { |set| count += set.length }
-    count
-  end
-
   let(:game) { Game.new }
   # let(:player1) { game.players['Player 1'] }
   # let(:player2) { game.players['Player 2'] }
@@ -35,8 +29,8 @@ describe Game do
     it 'shuffles and deals deck to players' do
       game.start
       expect(game.deck.cards.length).to eq 38
-      expect(count_hand(player1)).to eq 7
-      expect(count_hand(player2)).to eq 7
+      expect(player1.count_hand).to eq 7
+      expect(player2.count_hand).to eq 7
     end
   end
 
@@ -45,8 +39,8 @@ describe Game do
       player1.retrieve_card(card1)
       player2.retrieve_card(card2)
       expect(game.play_round('Player 2', 'A')).to eq 'Player 1 took A of Clubs from Player 2'
-      expect(count_hand(player1)).to eq 2
-      expect(count_hand(player2)).to eq 0
+      expect(player1.count_hand).to eq 2
+      expect(player2.count_hand).to eq 0
     end
 
     it 'if specified player does not have card, it takes next card from deck and adds to player hand' do
@@ -54,8 +48,8 @@ describe Game do
       player1.retrieve_card(card1)
       player2.retrieve_card(card2)
       game.play_round('Player 2', 'A')
-      expect(count_hand(player1)).to eq 2
-      expect(count_hand(player2)).to eq 1
+      expect(player1.count_hand).to eq 2
+      expect(player2.count_hand).to eq 1
     end
 
     it 'allows the player to get another turn if player gets the card they asked for' do
@@ -91,7 +85,7 @@ describe Game do
       player2.retrieve_card(card4)
       expect(game.play_round('Player 2', 'A')).to eq 'Player 1 took A of Hearts from Player 2.. Player 1 got 1 book'
       expect(player1.books).to eq 1
-      expect(count_hand(player1)).to eq 0
+      expect(player1.count_hand).to eq 0
     end
 
     it 'does not allow a player to ask for a card that is not in their hand' do

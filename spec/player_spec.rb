@@ -14,9 +14,7 @@ describe Player do
       player = Player.new('Player')
       card = PlayingCard.new('A', 'Spades')
       player.retrieve_card(card)
-      count = 0
-      player.hand.each_value { |set| count += set.length }
-      expect(count).to eq 1
+      expect(player.count_hand).to eq 1
     end
   end
 
@@ -28,9 +26,7 @@ describe Player do
       player.retrieve_card(card1)
       player.retrieve_card(card2)
       player.give_up_cards(card1.rank)
-      count = 0
-      player.hand.each_value { |set| count += set.length }
-      expect(count).to eq 1
+      expect(player.count_hand).to eq 1
     end
   end
 end

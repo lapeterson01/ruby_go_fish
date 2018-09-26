@@ -54,6 +54,6 @@ class Server < Sinatra::Base
   end
 
   get '/game' do
-    slim :game, locals: { game: self.class.game }
+    slim :game, locals: { game: self.class.game, current_player: session[:current_player] }
   end
 end

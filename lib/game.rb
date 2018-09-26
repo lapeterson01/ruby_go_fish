@@ -18,6 +18,12 @@ class Game
     @turn = player if @players.length == 1
   end
 
+  def other_players(player)
+    other_players_list = []
+    @players.each_value { |other_player| other_players_list.push(other_player) if player != other_player }
+    other_players_list
+  end
+
   def start
     deck.shuffle!
     players.each_value { |player| @players.length < 4 ? deal_cards(7, player) : deal_cards(5, player) }
