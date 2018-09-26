@@ -16,6 +16,7 @@ class Server < Sinatra::Base
   # Start Assets
   set :environment, Sprockets::Environment.new
   environment.append_path 'assets/images'
+  environment.append_path 'assets/images/cards'
   environment.append_path 'assets/stylesheets'
   environment.append_path 'assets/javascripts'
   environment.css_compressor = :scss
@@ -26,7 +27,7 @@ class Server < Sinatra::Base
   # End Assets
 
   def self.game
-    @@game ||= Game.new
+    @@game ||= Game.new # rubocop:disable Style/ClassVars
   end
 
   get '/' do

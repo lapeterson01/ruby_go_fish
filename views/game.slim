@@ -6,8 +6,8 @@ div.game
             div.opponent__books-count Books: #{player.books}
 
     div.table
-        div.deck
-            h6 = game.deck.cards.length
+        - game.deck.cards.length.times do |index|
+            img.deck style="right: #{index * 3}px; z-index: #{index}" src="assets/backs_red.png"
 
     div.current-player__bubble
         div.current-player__name = current_player.name
@@ -17,4 +17,6 @@ div.game
         div.current-player__card-count Cards: #{game.players[current_player.name].count_hand}
         ul.hand--card-list
             - game.players[current_player.name].hand.each_pair do |rank, set|
-                li.hand--card-item #{set.length} #{rank}
+                li.hand--card-item
+                    - set.each_with_index do |card, index|
+                        img src="assets/#{card.suit.chr.downcase}#{rank.downcase}.png"
