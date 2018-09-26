@@ -29,7 +29,7 @@ RSpec.describe Server do
       session.fill_in :name, with: player_name
       session.click_on 'Join'
       expect(session).to have_content('Players')
-      expect(session).to have_css('b', text: player_name)
+      expect(session).to have_css('.players__list--current_player', text: player_name)
     end
     expect(session2).to have_content('Player 1')
     session1.driver.refresh

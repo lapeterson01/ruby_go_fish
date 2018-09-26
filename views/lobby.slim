@@ -1,16 +1,23 @@
-div.navbar
-    ul.navbar--list
-        li
-            a.navbar--item href="/" GO FISH!
+div.lobby
+    div.navbar
+        ul.navbar--list
+            li
+                a.navbar--item href="/" GO FISH!
 
-div.players
-    h2.players__title Players:
-    ul.players__list
-        - game.players.each_value do |player|
-            - if player.name == current_player.name
-                li.players__list--current_player = player.name
-            - else
-                li = player.name
+    div.players
+        h2.players__title Players:
+        ul.players__list
+            - game.players.each_value do |player|
+                - if player.name == current_player.name
+                    li.players__list--current_player = player.name
+                - else
+                    li = player.name
 
-form action="/game" type="get"
-    button.button--game type="submit" Start Game!
+    - if host
+        - if game.players.length == 1
+             h3.game-message Waiting for other player to join!
+        - else
+            form action="/start-game" method="post"
+                button.button--game type="submit" Start Game!
+    - else
+        h3.game-message Waiting for host to start game!

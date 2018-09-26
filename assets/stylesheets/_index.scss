@@ -1,18 +1,22 @@
-// .home {
-//     background
-// }
+.home {
+    background: linear-gradient(to top, #47E5BC, #C4D7F2);
+    border: solid 2px #A5A728;
+    height: 450px;
+    width: 700px;
+    text-align: center;
+    border-radius: 50px;
+}
 
 .home__title {
-    position: absolute;
-    font-size: 70px;
+    font-size: 50px;
     top: 20px;
-    color: #47E5BC;
+    color: #CDD042;
     -webkit-text-stroke-color: #A5A728;
     -webkit-text-stroke-width: 1px;
 }
 
 .home__instruction {
-    font-size: 70px;
+    font-size: 50px;
     margin-top: -50px;
     color: #CDD042;
     -webkit-text-stroke-color: #A5A728;
@@ -22,36 +26,45 @@
 .home__name {
     display: flex;
     flex-direction: row;
+    justify-content: center;
 }
 
 .name__input {
-    height: 60px;
-    width: 500px;
+    height: 40px;
+    width: 300px;
     border: 1px black solid;
-    border-radius: 50px;
+    border-radius: 15px;
     text-align: center;
-    font-size: 45px;
+    font-size: 35px;
 }
 
 .name__button {
-    height: 60px;
-    width: 200px;
-    font-size: 40px;
+    height: 40px;
+    width: 100px;
+    font-size: 30px;
     margin-left: 10px;
-    background-color: #CDD042;
+    background: linear-gradient(#E0E28E, #B3B560);
     color: white;
-    border-radius: 20px;
+    border-radius: 15px;
+    cursor: pointer;
 }
 
 @media (max-width: 400px) {
+    .home {
+        width: 100%;
+        height: 50%;
+    }
+
     .home__title {
-        font-size: 25px;
+        font-size: 20px;
         margin-bottom: 0px;
     }
 
     .home__instruction {
-        font-size: 22px;
-        margin-top: 0px;
+        font-size: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        -webkit-text-stroke-width: 0.5px;
     }
 
     .home__name {
@@ -61,32 +74,37 @@
     }
 
     .name__input {
-        height: 30px;
+        height: 25px;
         width: 150px;
         font-size: 20px;
+        border-radius: 10px;
     }
 
     .name__button {
-        height: 30px;
+        height: 25px;
         width: 75px;
         font-size: 15px;
         margin-left: 0px;
         margin-top: 10px;
-        padding: 5px;
         border-radius: 10px;
     }
 }
 
 @media (min-width: 400px) and (max-width: 600px) {
+    .home {
+        width: 100%;
+        height: 50%;
+    }
+
     .home__title {
-        font-size: 35px;
+        font-size: 30px;
         margin-bottom: 0px;
-        margin-top: -110px;
     }
 
     .home__instruction {
-        font-size: 30px;
+        font-size: 25px;
         margin-top: 0px;
+        -webkit-text-stroke-width: 0.5px;
     }
 
     .home__name {
@@ -96,18 +114,29 @@
     }
 
     .name__input {
-        height: 40px;
-        width: 200px;
-        font-size: 30px;
+        height: 35px;
+        width: 175px;
+        font-size: 25px;
+        border-radius: 15px;
     }
 
     .name__button {
-        height: 40px;
+        height: 35px;
         width: 105px;
         font-size: 20px;
         margin-left: 0px;
         margin-top: 10px;
         padding: 5px;
         border-radius: 15px;
+    }
+}
+
+@media (min-width: 600px) and (max-width: 1100px) {
+    .home {
+        width: 100%;
+    }
+
+    .home__instruction {
+        font-size: 40px;
     }
 }

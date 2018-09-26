@@ -34,20 +34,26 @@ class Server < Sinatra::Base
   end
 
   post '/join' do
+    redirect '/' if params['name'] == ''
     player = Player.new(params['name'])
     session[:current_player] = player
-    host = true unless self.class.game
+    session[:host] = true if self.class.game.players.empty?
     self.class.game.add_player(player)
     redirect '/lobby'
-    # host ? redirect '/start/host' : redirect '/start/guest'
-  end
-
-  get '/start/:host' do
-    slim :start
   end
 
   get '/lobby' do
     redirect '/' unless self.class.game
-    slim :lobby, locals: { game: self.class.game, current_player: session[:current_player] }
+    redirect '/game' if self.class.game.started
+    slim :lobby, locals: { game: self.class.game, current_player: session[:current_player], host: session[:host] }
+  end
+
+  post '/start-game' do
+    self.class.game.start
+    redirect '/game'
+  end
+
+  get '/game' do
+    slim :game, locals: { game: self.class.game }
   end
 end
