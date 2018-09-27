@@ -1,8 +1,8 @@
 div.game
-    - if game.turn.name == current_player.name
+    - if game.turn.name == current_player.name && card && !player
         form action="/select-player" method="post"
             - game.other_players(game.players[current_player.name]).each do |player|
-                button.opponent style="cursor: pointer" name="player" type="submit" value="#{player.name}"
+                button.opponent style="cursor: pointer; outline-style: solid; outline-color: invert" name="player" type="submit" value="#{player.name}"
                     div.opponent__card-count Cards: #{player.count_hand}
                     div.opponent__name = player.name
                     div.opponent__books-count Books: #{player.books}
@@ -26,7 +26,7 @@ div.game
         ul.hand--card-list
             - game.players[current_player.name].hand.each_pair do |rank, set|
                 li.hand--card-item
-                    - if game.turn.name == current_player.name
+                    - if game.turn.name == current_player.name && !card && !player
                         form action="/select-card" method="post"
                             - set.each do |card|
                                 button.card type="submit" name="card" value="#{card.rank}"
@@ -38,9 +38,24 @@ div.game
 
     - if game.turn.name == current_player.name
         div.play
-            form action="/play-round" method="post"
-                button.play__button type="submit" name="play" Play!          
+            - if !card && !player
+                - if result
+                    h3 = result
+                
+                h3 Choose a card to ask for...
+            - elsif card && !player
+                h3 Choose a player to ask for a card...
+            - else
+                h3 Click 'Play!' to play the round...
+                form action="/play-round" method="post"
+                    button.play__button type="submit" name="play" Play!          
 
     - else
         div.play--message
-            h3 Waiting for #{game.turn.name} to take their turn...
+            - if result
+                h3 = result
+            - else
+                h3 Waiting for #{game.turn.name} to take their turn...
+
+            button.refresh onClick="history.go(0)"
+                i.fas.fa-redo

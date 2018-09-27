@@ -15,9 +15,13 @@ div.lobby
 
     - if host
         - if game.players.length == 1
-             h3.game-message Waiting for other player to join!
+            h3.game-message Waiting for other player to join!
+            button.refresh onClick="history.go(0)"
+                i.fas.fa-redo
         - else
             form action="/start-game" method="post"
                 button.button--game type="submit" Start Game!
     - else
         h3.game-message Waiting for host to start game!
+        button.refresh onClick="history.go(0)"
+            i.fas.fa-redo

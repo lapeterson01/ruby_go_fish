@@ -26,6 +26,14 @@ class Server < Sinatra::Base
   end
   # End Assets
 
+  ['/lobby', '/start-game', '/game', '/select-card', '/select-player', '/play-round'].each do |path|
+    before path do
+      redirect '/' unless defined? @@game
+    end
+  end
+
+  @@round_result = nil
+
   def self.game
     @@game ||= Game.new # rubocop:disable Style/ClassVars
   end
@@ -44,7 +52,6 @@ class Server < Sinatra::Base
   end
 
   get '/lobby' do
-    redirect '/' unless self.class.game
     redirect '/game' if self.class.game.started
     slim :lobby, locals: { game: self.class.game, current_player: session[:current_player], host: session[:host] }
   end
@@ -55,11 +62,12 @@ class Server < Sinatra::Base
   end
 
   get '/game' do
-    slim :game, locals: { game: self.class.game, current_player: session[:current_player] }
+    slim :game, locals: { game: self.class.game, current_player: session[:current_player], card: session[:card], player: session[:player], result: @@round_result }
   end
 
   post '/select-card' do
     session[:card] = params['card']
+    @@round_result = nil
     redirect '/game'
   end
 
@@ -69,8 +77,9 @@ class Server < Sinatra::Base
   end
 
   post '/play-round' do
-    result = self.class.game.play_round(session[:player], session[:card])
-binding.pry
+    @@round_result = self.class.game.play_round(session[:player], session[:card])
+    session[:card] = nil
+    session[:player] = nil
     redirect '/game'
   end
 end
