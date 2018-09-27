@@ -1,9 +1,17 @@
 div.game
-    div.opponent
+    - if game.turn.name == current_player.name
+        form action="/select-player" method="post"
+            - game.other_players(game.players[current_player.name]).each do |player|
+                button.opponent style="cursor: pointer" name="player" type="submit" value="#{player.name}"
+                    div.opponent__card-count Cards: #{player.count_hand}
+                    div.opponent__name = player.name
+                    div.opponent__books-count Books: #{player.books}
+    - else
         - game.other_players(game.players[current_player.name]).each do |player|
-            div.opponent__card-count Cards: #{player.count_hand}
-            div.opponent__name = player.name
-            div.opponent__books-count Books: #{player.books}
+                div.opponent
+                    div.opponent__card-count Cards: #{player.count_hand}
+                    div.opponent__name = player.name
+                    div.opponent__books-count Books: #{player.books}
 
     div.table
         - game.deck.cards.length.times do |index|
@@ -18,5 +26,21 @@ div.game
         ul.hand--card-list
             - game.players[current_player.name].hand.each_pair do |rank, set|
                 li.hand--card-item
-                    - set.each_with_index do |card, index|
-                        img src="assets/#{card.suit.chr.downcase}#{rank.downcase}.png"
+                    - if game.turn.name == current_player.name
+                        form action="/select-card" method="post"
+                            - set.each do |card|
+                                button.card type="submit" name="card" value="#{card.rank}"
+                                    img src="assets/#{card.suit.chr.downcase}#{rank.downcase}.png"
+
+                    - else
+                        - set.each do |card|
+                            img src="assets/#{card.suit.chr.downcase}#{rank.downcase}.png"
+
+    - if game.turn.name == current_player.name
+        div.play
+            form action="/play-round" method="post"
+                button.play__button type="submit" name="play" Play!          
+
+    - else
+        div.play--message
+            h3 Waiting for #{game.turn.name} to take their turn...

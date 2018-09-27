@@ -9,7 +9,6 @@ class Game
   def initialize(deck = CardDeck.new)
     @deck = deck
     @players = {}
-    # number_of_players.times { |player_number| @players["Player #{player_number + 1}"] = Player.new("Player #{player_number + 1}") }
     @started = false
   end
 

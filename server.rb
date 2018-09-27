@@ -57,4 +57,20 @@ class Server < Sinatra::Base
   get '/game' do
     slim :game, locals: { game: self.class.game, current_player: session[:current_player] }
   end
+
+  post '/select-card' do
+    session[:card] = params['card']
+    redirect '/game'
+  end
+
+  post '/select-player' do
+    session[:player] = params['player']
+    redirect '/game'
+  end
+
+  post '/play-round' do
+    result = self.class.game.play_round(session[:player], session[:card])
+binding.pry
+    redirect '/game'
+  end
 end
