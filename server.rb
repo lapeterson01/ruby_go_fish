@@ -50,7 +50,7 @@ class Server < Sinatra::Base
     redirect '/' if params['name'] == ''
     player = Player.new(params['name'])
     session[:current_player] = player
-    self.class.game.players.empty? ? session[:host] = true : session[:host] = false
+    session[:host] = self.class.game.players.empty? ? true : false
     self.class.game.add_player(player)
     redirect '/lobby'
   end
@@ -68,6 +68,8 @@ class Server < Sinatra::Base
   get '/game' do
     redirect '/lobby' unless self.class.game.started
     redirect '/game-over' if self.class.game.winner
+    round_result = self.class.game.round_result
+    create_message(round_result) if round_result
     slim :game, locals: { game: self.class.game, current_player: self.class.game.players[session[:current_player].name], card: session[:card], player: session[:player], result: self.class.game.round_result }
   end
 
@@ -97,5 +99,14 @@ class Server < Sinatra::Base
   post '/restart-game' do
     self.class.clear_game if session[:host]
     redirect '/join', 308
+  end
+
+  private
+
+  def create_message(round_result)
+    cards = []
+    round_result['cards'].each { |card| cards.push("#{card.rank} of #{card.suit}") }
+    cards_string = cards.join(', ')
+    string_to_display = ["#{round_result['turn']} took ", " from #{round_result['card_from']}"].join(cards_string)
   end
 end

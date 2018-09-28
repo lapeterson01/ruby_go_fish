@@ -4,7 +4,7 @@ require 'pry'
 
 # creates and runs a game of go fish
 class Game
-  attr_reader :deck, :players, :turn, :books_display_name, :books_display_number, :string_to_display, :winning_books, :started
+  attr_reader :deck, :players, :turn, :books_display_name, :books_display_number, :hash_to_return, :winning_books, :started
   attr_accessor :round_result
 
   def initialize(deck = CardDeck.new)
@@ -39,7 +39,7 @@ class Game
     get_catch = player.hand[rank] ? handle_asked_player_has_card(player, rank) : handle_go_fish(rank)
     handle_player_got_book
     next_player_turn unless get_catch
-    @round_result = books_display_number > 0 ? string_to_display.concat(".. #{books_display_name} got #{books_display_number} #{book_or_books}") : string_to_display
+    @round_result = hash_to_return
   end
 
   def winner
@@ -60,14 +60,19 @@ class Game
   def handle_asked_player_has_card(player, rank)
     cards = player.give_up_cards(rank)
     cards.each { |card| @turn.retrieve_card(card) }
-    create_display(player, cards)
+    create_display(player, cards, rank)
     _get_catch = true
   end
 
   def handle_go_fish(rank)
     card = deck.deal
     turn.retrieve_card(card)
-    @string_to_display = "#{@turn.name} asked for #{rank} and drew #{card.rank} of #{card.suit} from pool"
+    @hash_to_return = {
+      'turn' => @turn.name,
+      'rank_asked_for' => rank,
+      'card_from' => 'pool',
+      'cards' => [card]
+    }
     _get_catch = card.rank == rank
   end
 
@@ -107,11 +112,15 @@ class Game
     end
   end
 
-  def create_display(player, cards)
-    cards_strings = []
-    cards.each { |card| cards_strings.push("#{card.rank} of #{card.suit}") }
-    cards_display = cards_strings.join(', ')
-    @string_to_display = ["#{turn.name} took ", " from #{player.name}"].join(cards_display)
+  def create_display(player, cards, rank)
+    @hash_to_return = {
+      'turn' => turn.name,
+      'rank_asked_for' => rank,
+      'card_from' => player.name,
+      'cards' => []
+    }
+    cards.each { |card| @hash_to_return['cards'].push(card) }
+    hash_to_return
   end
 
   def book_or_books
