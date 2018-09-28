@@ -34,12 +34,14 @@
     float: left;
     display: block;
     font-size: 30px;
+    font-variant: small-caps;
     color: #D7D968;
     text-decoration: none;
 }
 
 .players__title {
     font-size: 60px;
+    font-variant: small-caps;
     color: #CDD042;
     -webkit-text-stroke-color: #A5A728;
     -webkit-text-stroke-width: 1px;
@@ -51,6 +53,7 @@
     padding: 0;
     text-align: center;
     font-size: 40px;
+    font-variant: small-caps;
     color: #CDD042;
     -webkit-text-stroke-color: #A5A728;
     -webkit-text-stroke-width: 1px;
@@ -65,6 +68,7 @@
 .game-message {
     margin-top: 75px;
     font-size: 35px;
+    font-variant: small-caps;
     color: #CDD042;
     -webkit-text-stroke-color: #A5A728;
     -webkit-text-stroke-width: 0.5px;
@@ -76,6 +80,7 @@
     height: 45px;
     width: 200px;
     font-size: 30px;
+    font-variant: small-caps;
     margin-top: 0px;
     background: linear-gradient(#DADC75, #CDD042);
     color: white;

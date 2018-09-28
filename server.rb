@@ -5,6 +5,8 @@ require 'sass'
 require 'pry'
 require_relative 'lib/game'
 require_relative 'lib/player'
+require_relative 'lib/card_deck'
+require_relative 'lib/test_deck'
 
 # Server setup
 class Server < Sinatra::Base
@@ -26,16 +28,18 @@ class Server < Sinatra::Base
   end
   # End Assets
 
-  ['/lobby', '/start-game', '/game', '/select-card', '/select-player', '/play-round'].each do |path|
+  ['/lobby', '/start-game', '/game', '/select-card', '/select-player', '/play-round', '/game-over', '/restart-game'].each do |path|
     before path do
       redirect '/' unless defined? @@game
     end
   end
 
-  @@round_result = nil
+  def self.game(deck = CardDeck.new)
+    @@game ||= Game.new(TestDeck.new) # rubocop:disable Style/ClassVars
+  end
 
-  def self.game
-    @@game ||= Game.new # rubocop:disable Style/ClassVars
+  def self.clear_game
+    @@game = nil # rubocop:disbale Style/ClassVars
   end
 
   get '/' do
@@ -46,7 +50,7 @@ class Server < Sinatra::Base
     redirect '/' if params['name'] == ''
     player = Player.new(params['name'])
     session[:current_player] = player
-    session[:host] = true if self.class.game.players.empty?
+    self.class.game.players.empty? ? session[:host] = true : session[:host] = false
     self.class.game.add_player(player)
     redirect '/lobby'
   end
@@ -62,12 +66,14 @@ class Server < Sinatra::Base
   end
 
   get '/game' do
-    slim :game, locals: { game: self.class.game, current_player: session[:current_player], card: session[:card], player: session[:player], result: @@round_result }
+    redirect '/lobby' unless self.class.game.started
+    redirect '/game-over' if self.class.game.winner
+    slim :game, locals: { game: self.class.game, current_player: self.class.game.players[session[:current_player].name], card: session[:card], player: session[:player], result: self.class.game.round_result }
   end
 
   post '/select-card' do
     session[:card] = params['card']
-    @@round_result = nil
+    self.class.game.round_result = nil
     redirect '/game'
   end
 
@@ -77,9 +83,19 @@ class Server < Sinatra::Base
   end
 
   post '/play-round' do
-    @@round_result = self.class.game.play_round(session[:player], session[:card])
+    self.class.game.play_round(session[:player], session[:card])
     session[:card] = nil
     session[:player] = nil
     redirect '/game'
+  end
+
+  get '/game-over' do
+    redirect '/lobby' unless self.class.game.started
+    slim :game_over, locals: { game_results: self.class.game.winner, current_player: session[:current_player] }
+  end
+
+  post '/restart-game' do
+    self.class.clear_game if session[:host]
+    redirect '/join', 308
   end
 end

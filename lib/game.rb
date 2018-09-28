@@ -4,7 +4,8 @@ require 'pry'
 
 # creates and runs a game of go fish
 class Game
-  attr_reader :deck, :players, :turn, :started, :books_display_name, :books_display_number, :string_to_display, :winning_books
+  attr_reader :deck, :players, :turn, :books_display_name, :books_display_number, :string_to_display, :winning_books, :started
+  attr_accessor :round_result
 
   def initialize(deck = CardDeck.new)
     @deck = deck
@@ -38,7 +39,7 @@ class Game
     get_catch = player.hand[rank] ? handle_asked_player_has_card(player, rank) : handle_go_fish(rank)
     handle_player_got_book
     next_player_turn unless get_catch
-    books_display_number > 0 ? string_to_display.concat(".. #{books_display_name} got #{books_display_number} #{book_or_books}") : string_to_display
+    @round_result = books_display_number > 0 ? string_to_display.concat(".. #{books_display_name} got #{books_display_number} #{book_or_books}") : string_to_display
   end
 
   def winner

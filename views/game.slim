@@ -25,37 +25,42 @@ div.game
         div.current-player__card-count Cards: #{game.players[current_player.name].count_hand}
         ul.hand--card-list
             - game.players[current_player.name].hand.each_pair do |rank, set|
-                li.hand--card-item
-                    - if game.turn.name == current_player.name && !card && !player
+                - if game.turn.name == current_player.name && !card && !player
+                    li.hand--card-item
                         form action="/select-card" method="post"
-                            - set.each do |card|
-                                button.card type="submit" name="card" value="#{card.rank}"
-                                    img src="assets/#{card.suit.chr.downcase}#{rank.downcase}.png"
+                            button.card--button id="#{rank}" type="submit" name="card" value="#{rank}"
+                                ul.card--list
+                                    - set.each_with_index do |card, index|
+                                        li.card style="top: #{index * 20}px; z-index: #{index}"
+                                            img src="assets/#{card.suit.chr.downcase}#{rank.downcase}.png"
 
-                    - else
-                        - set.each do |card|
-                            img src="assets/#{card.suit.chr.downcase}#{rank.downcase}.png"
+                - else
+                    li.hand--card-item style="outline: none"
+                        ul.card--list
+                            - set.each_with_index do |card, index|
+                                li.card style="top: #{index * 20}px; z-index: #{index}"
+                                    img src="assets/#{card.suit.chr.downcase}#{rank.downcase}.png"
 
     - if game.turn.name == current_player.name
         div.play
             - if !card && !player
                 - if result
-                    h3 = result
+                    p = result
                 
-                h3 Choose a card to ask for...
+                | Choose a card to ask for...
             - elsif card && !player
-                h3 Choose a player to ask for a card...
+                | Choose a player to ask for a card...
             - else
-                h3 Click 'Play!' to play the round...
+                | Click 'Play!' to play the round...
                 form action="/play-round" method="post"
                     button.play__button type="submit" name="play" Play!          
 
     - else
         div.play--message
             - if result
-                h3 = result
+                = result
             - else
-                h3 Waiting for #{game.turn.name} to take their turn...
+                | Waiting for #{game.turn.name} to take their turn...
 
-            button.refresh onClick="history.go(0)"
+            button.refresh onClick="window.location.reload()"
                 i.fas.fa-redo

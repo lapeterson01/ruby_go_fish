@@ -2,7 +2,7 @@ div.lobby
     div.navbar
         ul.navbar--list
             li
-                a.navbar--item href="/" GO FISH!
+                a.navbar--item href="/" Go Fish!
 
     div.players
         h2.players__title Players:
@@ -15,13 +15,13 @@ div.lobby
 
     - if host
         - if game.players.length == 1
-            h3.game-message Waiting for other player to join!
+            p.game-message Waiting for other player to join!
             button.refresh onClick="history.go(0)"
                 i.fas.fa-redo
         - else
             form action="/start-game" method="post"
                 button.button--game type="submit" Start Game!
     - else
-        h3.game-message Waiting for host to start game!
+        p.game-message Waiting for host to start game!
         button.refresh onClick="history.go(0)"
             i.fas.fa-redo
