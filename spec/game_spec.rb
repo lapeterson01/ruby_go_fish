@@ -2,9 +2,14 @@ require 'rspec'
 require_relative '../lib/game'
 
 describe Game do
+  def round_result_expectations(round_result, card_from, cards, rank_asked_for, turn)
+    expect(round_result['card_from']).to eq card_from
+    expect(round_result['cards']).to eq cards
+    expect(round_result['rank_asked_for']).to eq rank_asked_for
+    expect(round_result['turn']).to eq turn
+  end
+
   let(:game) { Game.new }
-  # let(:player1) { game.players['Player 1'] }
-  # let(:player2) { game.players['Player 2'] }
   let(:player1) { Player.new('Player 1') }
   let(:player2) { Player.new('Player 2') }
   let(:card1) { PlayingCard.new('A', 'Spades') }
@@ -38,7 +43,7 @@ describe Game do
     it 'removes specified card from specified player (if they have the card) and adds it to the player whose turn it is' do
       player1.retrieve_card(card1)
       player2.retrieve_card(card2)
-      expect(game.play_round('Player 2', 'A')).to eq 'Player 1 took A of Clubs from Player 2'
+      round_result_expectations(game.play_round('Player 2', 'A'), player2.name, [card2], 'A', player1.name)
       expect(player1.count_hand).to eq 2
       expect(player2.count_hand).to eq 0
     end
@@ -55,7 +60,7 @@ describe Game do
     it 'allows the player to get another turn if player gets the card they asked for' do
       player1.retrieve_card(card1)
       player2.retrieve_card(card2)
-      expect(game.play_round('Player 2', 'A')).to eq 'Player 1 took A of Clubs from Player 2'
+      round_result_expectations(game.play_round('Player 2', 'A'), player2.name, [card2], 'A', player1.name)
       expect(game.turn).to eq player1
     end
 
@@ -83,7 +88,7 @@ describe Game do
       card3, card4 = PlayingCard.new('A', 'Diamonds'), PlayingCard.new('A', 'Hearts')
       player1.retrieve_card(card1) && player1.retrieve_card(card2) && player1.retrieve_card(card3)
       player2.retrieve_card(card4)
-      expect(game.play_round('Player 2', 'A')).to eq 'Player 1 took A of Hearts from Player 2.. Player 1 got 1 book'
+      round_result_expectations(game.play_round('Player 2', 'A'), player2.name, [card4], 'A', player1.name)
       expect(player1.books).to eq 1
       expect(player1.count_hand).to eq 0
     end

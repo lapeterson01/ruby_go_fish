@@ -87,18 +87,18 @@ RSpec.describe Server do
       expect(session).to have_css('.players__list--current_player', text: player_name)
       expect(session).to have_content('Waiting for other player to join!') if index == 0
     end
-    expect(session2).to have_content('Waiting for host to start game!') and have_content('Player 1')
+    expect(session2).to(have_content('Waiting for host to start game!')) && have_content('Player 1')
     session1.driver.refresh
-    expect(session1).to have_content('Player 2') and have_button('Start Game!')
+    expect(session1).to(have_content('Player 2')) && have_button('Start Game!')
   end
 
   it 'allows players to start a game' do
     [session1, session2].each_with_index { |session, index| join_game(session, index) }
     start_game
-    expect(session1).to have_content 'Cards: 7' and have_content 'Books: 0'
-    expect(session1).to have_content 'Player 1' and have_content 'Player 2'
+    expect(session1).to(have_content('Cards: 7')) && have_content('Books: 0')
+    expect(session1).to(have_content('Player 1')) && have_content('Player 2')
     expect(session1).to have_content 'Choose a card to ask for...'
-    expect(session2).to have_content 'Player 1' and have_content 'Player 2'
+    expect(session2).to(have_content('Player 1')) && have_content('Player 2')
     expect(session2).to have_content 'Waiting for Player 1 to take their turn...'
   end
 
@@ -114,7 +114,7 @@ RSpec.describe Server do
     [session1, session2].each_with_index { |session, index| join_game(session, index) }
     start_game
     play_round('A')
-    expect(session1).to have_content 'Cards: 5' and have_content 'Books: 1'
+    expect(session1).to(have_content('Cards: 5')) && have_content('Books: 1')
     expect(session2).to have_content 'Cards: 5'
   end
 
@@ -124,8 +124,8 @@ RSpec.describe Server do
     2.times { play_round('Q') }
     2.times { play_round('J') }
     session2.visit '/game-over'
-    expect(session1).to have_content 'Game Over!' and have_content 'Winner: Player 1'
-    expect(session2).to have_content 'Game Over!' and have_content 'Winner: Player 1'
+    expect(session1).to(have_content('Game Over!')) && have_content('Winner: Player 1')
+    expect(session2).to(have_content('Game Over!')) && have_content('Winner: Player 1')
   end
 
   # it 'allows players to restart game' do

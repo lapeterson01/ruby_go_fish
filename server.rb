@@ -34,7 +34,7 @@ class Server < Sinatra::Base
     end
   end
 
-  def self.game(deck = CardDeck.new)
+  def self.game(_deck = CardDeck.new)
     @@game ||= Game.new(TestDeck.new) # rubocop:disable Style/ClassVars
   end
 
@@ -68,9 +68,8 @@ class Server < Sinatra::Base
   get '/game' do
     redirect '/lobby' unless self.class.game.started
     redirect '/game-over' if self.class.game.winner
-    round_result = self.class.game.round_result
-    create_message(round_result) if round_result
-    slim :game, locals: { game: self.class.game, current_player: self.class.game.players[session[:current_player].name], card: session[:card], player: session[:player], result: self.class.game.round_result }
+    round_result = create_message(self.class.game.round_result) if self.class.game.round_result
+    slim :game, locals: { game: self.class.game, current_player: self.class.game.players[session[:current_player].name], card: session[:card], player: session[:player], result: round_result }
   end
 
   post '/select-card' do
@@ -104,9 +103,25 @@ class Server < Sinatra::Base
   private
 
   def create_message(round_result)
-    cards = []
-    round_result['cards'].each { |card| cards.push("#{card.rank} of #{card.suit}") }
-    cards_string = cards.join(', ')
-    string_to_display = ["#{round_result['turn']} took ", " from #{round_result['card_from']}"].join(cards_string)
+    if round_result['turn'] == session[:current_player].name
+      if round_result['card_from'] == 'pool'
+        card = round_result['cards'][0]
+        _string_to_display = "You drew #{card.rank} of #{card.suit} from pool"
+      else
+        cards = []
+        round_result['cards'].each { |card| cards.push("#{card.rank} of #{card.suit}") }
+        cards_string = cards.join(', ')
+        _string_to_display = ['You took ', " from #{round_result['card_from']}"].join(cards_string)
+      end
+    else
+      if round_result['card_from'] == 'pool'
+        _string_to_display = "#{round_result['turn']} drew from pool"
+      else
+        cards = []
+        round_result['cards'].each { |card| cards.push("#{card.rank} of #{card.suit}") }
+        cards_string = cards.join(', ')
+        _string_to_display = ["#{round_result['turn']} took ", ' from you'].join(cards_string)
+      end
+    end
   end
 end
