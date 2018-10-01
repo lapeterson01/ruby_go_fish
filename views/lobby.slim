@@ -1,3 +1,11 @@
+form action="/refresh" name="refresh" method="post"
+
+- if game.players.length > 1 && refresh == false
+    javascript:
+        window.onload = function() {
+            document.forms['refresh'].submit();
+        };
+
 div.lobby
     div.navbar
         ul.navbar--list
@@ -16,12 +24,12 @@ div.lobby
     - if host
         - if game.players.length == 1
             p.game-message Waiting for other player to join!
-            button.refresh onClick="history.go(0)"
+            button.refresh onClick="window.location.reload()"
                 i.fas.fa-redo
         - else
             form action="/start-game" method="post"
                 button.button--game type="submit" Start Game!
     - else
         p.game-message Waiting for host to start game!
-        button.refresh onClick="history.go(0)"
+        button.refresh onClick="window.location.reload()"
             i.fas.fa-redo

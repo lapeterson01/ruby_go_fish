@@ -3,16 +3,26 @@ require 'sinatra/reloader'
 require 'sprockets'
 require 'sass'
 require 'pry'
+require 'dotenv'
+Dotenv.load('.env')
+require 'pusher'
 require_relative 'lib/game'
 require_relative 'lib/player'
-require_relative 'lib/card_deck'
-require_relative 'lib/test_deck'
+# require_relative 'lib/test_deck'
 
 # Server setup
 class Server < Sinatra::Base
   configure :development do
     register Sinatra::Reloader
   end
+
+  pusher_client = Pusher::Client.new(
+    app_id: ENV['PUSHER_APP_ID'],
+    key: ENV['PUSHER_KEY'],
+    secret: ENV['PUSHER_SECRET'],
+    cluster: ENV['PUSHER_CLUSTER'],
+    encrypted: ENV['PUSHER_ENCRYPTED']
+  )
 
   enable :sessions
   # Start Assets
@@ -34,8 +44,8 @@ class Server < Sinatra::Base
     end
   end
 
-  def self.game(_deck = CardDeck.new)
-    @@game ||= Game.new(TestDeck.new) # rubocop:disable Style/ClassVars
+  def self.game
+    @@game ||= Game.new # rubocop:disable Style/ClassVars
   end
 
   def self.clear_game
@@ -52,16 +62,18 @@ class Server < Sinatra::Base
     session[:current_player] = player
     session[:host] = self.class.game.players.empty? ? true : false
     self.class.game.add_player(player)
+    session[:refresh] = false
     redirect '/lobby'
   end
 
   get '/lobby' do
     redirect '/game' if self.class.game.started
-    slim :lobby, locals: { game: self.class.game, current_player: session[:current_player], host: session[:host] }
+    slim :lobby, locals: { game: self.class.game, current_player: session[:current_player], host: session[:host], refresh: session[:refresh] }
   end
 
   post '/start-game' do
     self.class.game.start
+    pusher_client.trigger('go-fish', 'refresh', {})
     redirect '/game'
   end
 
@@ -87,11 +99,18 @@ class Server < Sinatra::Base
     self.class.game.play_round(session[:player], session[:card])
     session[:card] = nil
     session[:player] = nil
+    redirect '/game-refresh', 308 unless self.class.game.winner
+    redirect '/game'
+  end
+
+  post '/game-refresh' do
+    pusher_client.trigger('go-fish', 'refresh', {})
     redirect '/game'
   end
 
   get '/game-over' do
     redirect '/lobby' unless self.class.game.started
+    pusher_client.trigger('go-fish', 'refresh', {})
     slim :game_over, locals: { game_results: self.class.game.winner, current_player: session[:current_player] }
   end
 
@@ -100,28 +119,31 @@ class Server < Sinatra::Base
     redirect '/join', 308
   end
 
+  post '/refresh' do
+    pusher_client.trigger('go-fish', 'refresh', {})
+    session[:refresh] = true
+    redirect '/lobby'
+  end
+
   private
 
   def create_message(round_result)
-    if round_result['turn'] == session[:current_player].name
-      if round_result['card_from'] == 'pool'
-        card = round_result['cards'][0]
-        _string_to_display = "You drew #{card.rank} of #{card.suit} from pool"
-      else
-        cards = []
-        round_result['cards'].each { |card| cards.push("#{card.rank} of #{card.suit}") }
-        cards_string = cards.join(', ')
-        _string_to_display = ['You took ', " from #{round_result['card_from']}"].join(cards_string)
-      end
-    else
-      if round_result['card_from'] == 'pool'
-        _string_to_display = "#{round_result['turn']} drew from pool"
-      else
-        cards = []
-        round_result['cards'].each { |card| cards.push("#{card.rank} of #{card.suit}") }
-        cards_string = cards.join(', ')
-        _string_to_display = ["#{round_result['turn']} took ", ' from you'].join(cards_string)
-      end
-    end
+    round_result['card_from'] == 'pool' ? handle_draw_from_pool_message(round_result) : handle_take_from_player_message(round_result)
+  end
+
+  def handle_draw_from_pool_message(round_result)
+    card = round_result['cards'][0]
+    return "You drew #{card.rank} of #{card.suit} from pool" if round_result['turn'] == session[:current_player].name
+
+    "#{round_result['turn']} drew from pool"
+  end
+
+  def handle_take_from_player_message(round_result)
+    cards = []
+    round_result['cards'].each { |card| cards.push("#{card.rank} of #{card.suit}") }
+    cards_string = cards.join(', ')
+    return ['You took ', " from #{round_result['card_from']}"].join(cards_string) if round_result['turn'] == session[:current_player].name
+
+    ["#{round_result['turn']} took ", ' from you'].join(cards_string)
   end
 end

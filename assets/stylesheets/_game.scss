@@ -25,6 +25,14 @@
     justify-content: center;
 }
 
+.opponent_bubbles {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    width: 80%;
+}
+
 .table {
     background: linear-gradient(#E0E28E, #B3B560);
     border: solid 2px #6FB074;
@@ -67,14 +75,28 @@
     justify-content: space-around;
 }
 
-.current-player__card-count {
-    font-size: 25px;
-    font-variant: small-caps;
-    margin-left: 50px;
+.current-player__info {
     color: #CDD042;
     -webkit-text-stroke-color: #A5A728;
     -webkit-text-stroke-width: 0.5px;
+    font-size: 25px;
+    font-variant: small-caps;
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-around;
+    width: 100%;
 }
+
+// .current-player__card-count {
+//     font-size: 25px;
+//     font-variant: small-caps;
+//     margin-left: 50px;
+//     color: #CDD042;
+//     -webkit-text-stroke-color: #A5A728;
+//     -webkit-text-stroke-width: 0.5px;
+// }
 
 .hand--card-list {
     width: 100%;

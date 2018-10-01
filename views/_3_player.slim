@@ -1,0 +1,19 @@
+div.opponent_bubbles
+    - if game.turn.name == current_player.name && card && !player
+        form.opponent_bubbles action="/select-player" method="post"
+            - game.other_players(game.players[current_player.name]).each do |player|
+                button.opponent style="cursor: pointer; outline-style: solid; outline-color: invert" name="player" type="submit" value="#{player.name}"
+                    div.opponent__card-count Cards: #{player.count_hand}
+                    div.opponent__name = player.name
+                    div.opponent__books-count Books: #{player.books}
+
+    - else
+        - game.other_players(game.players[current_player.name]).each do |player|
+                div.opponent
+                    div.opponent__card-count Cards: #{player.count_hand}
+                    div.opponent__name = player.name
+                    div.opponent__books-count Books: #{player.books}
+
+div.table
+    - game.deck.cards.length.times do |index|
+        img.deck style="right: #{index * 3}px; z-index: #{index}" src="assets/backs_red.png"

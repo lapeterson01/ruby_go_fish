@@ -1,2 +1,4 @@
 Gemfile.lock
 .rubocop.yml
+assets/javascripts
+.env

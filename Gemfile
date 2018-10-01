@@ -7,6 +7,8 @@ gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'slim'
 gem 'sprockets'
+gem 'dotenv'
+gem 'pusher'
 
 group :test do
   gem 'capybara'

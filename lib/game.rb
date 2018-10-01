@@ -14,6 +14,8 @@ class Game
   end
 
   def add_player(player)
+    return if @players.length == 4
+
     @players[player.name] = player
     @turn = player if @players.length == 1
   end
