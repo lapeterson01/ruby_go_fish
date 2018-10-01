@@ -8,6 +8,7 @@ Dotenv.load('.env')
 require 'pusher'
 require_relative 'lib/game'
 require_relative 'lib/player'
+require_relative 'lib/card_deck'
 # require_relative 'lib/test_deck'
 
 # Server setup
@@ -44,8 +45,8 @@ class Server < Sinatra::Base
     end
   end
 
-  def self.game
-    @@game ||= Game.new # rubocop:disable Style/ClassVars
+  def self.game(deck = CardDeck.new)
+    @@game ||= Game.new(deck) # rubocop:disable Style/ClassVars
   end
 
   def self.clear_game
